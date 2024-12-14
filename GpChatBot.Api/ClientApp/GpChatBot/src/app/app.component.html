@@ -1,0 +1,51 @@
+<mat-toolbar color="primary">
+  <span>GP Chat Bot</span>
+</mat-toolbar>
+
+<div class="chat-container">
+  <div class="chat-history">
+    <mat-list>
+      <mat-list-item (click)="selectChat(chat)" *ngFor="let chat of chats" class="chat-item">
+        <div>
+          <strong>{{ truncateMessage(chat.messages[chat.messages.length - 1]?.message, 20) }}</strong>
+          <br>
+          {{ chat.startedAt | date: 'short' }}
+        </div>
+      </mat-list-item>
+    </mat-list>
+  </div>
+
+  <div class="chat-box">
+    <div class="messages">
+      <mat-list>
+        <mat-list-item *ngFor="let message of messages"
+                       [ngClass]="{'left-align': message.isBot, 'right-align': !message.isBot}">
+          <div class="message-content">
+            {{ message.message }}
+            <br>
+            <button (click)="updateReaction(message, true)" *ngIf="message.isBot && !isLoading"
+                    [ngClass]="{'liked-button': message.isLiked === true}"
+                    aria-label="Like" mat-icon-button>👍
+            </button>
+            <button (click)="updateReaction(message, false)" *ngIf="message.isBot && !isLoading"
+                    [ngClass]="{'disliked-button': message.isLiked === false}"
+                    aria-label="Dislike" mat-icon-button>👎
+            </button>
+          </div>
+        </mat-list-item>
+      </mat-list>
+    </div>
+
+    <div class="chat-input">
+      <mat-form-field appearance="fill" class="message-input">
+        <mat-label>{{ isConnected ? 'Type your question' : 'Start chart' }}</mat-label>
+        <input (keyup.enter)="sendMessage()" [(ngModel)]="newMessage" [disabled]="!isConnected || isLoading" matInput/>
+      </mat-form-field>
+      <button (click)="startChat()" *ngIf="!isConnected" color="primary" mat-raised-button>Start</button>
+      <button (click)="sendMessage()" *ngIf="isConnected" [disabled]="isLoading" color="primary" mat-raised-button>
+        Send
+      </button>
+      <button (click)="stopConnection()" color="accent" mat-raised-button>End</button>
+    </div>
+  </div>
+</div>
