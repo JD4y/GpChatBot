@@ -54,7 +54,7 @@ public class ChatHub : Hub
             var userMessage = await _mediator.Send(new AddUserMessageCommand(chatId, message));
             await Clients.Caller.SendAsync("ReceiveMessage", userMessage.Map());
 
-            await SendLoremIpsum(Random.Next(1, 6), chatId);
+            await SendLoremIpsum(Random.Next(1, 10), chatId);
         }
         else
         {
@@ -64,9 +64,9 @@ public class ChatHub : Hub
     
     private async Task SendLoremIpsum(int sentenceCount, Guid chatId)
     {
-        if (sentenceCount < 1 || sentenceCount > 10)
+        if (sentenceCount < 1 || sentenceCount > 9)
         {
-            await Clients.Caller.SendAsync("ReceiveMessage", "Error", "Please provide a value between 1 and 5.");
+            await Clients.Caller.SendAsync("ReceiveMessage", "Error", "Please provide a value between 1 and 9.");
             return;
         }
 
